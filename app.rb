@@ -67,11 +67,16 @@ end
 # вывод информации о посте
 
 get '/post/:post_id' do
+
+	# получаем переменную из url'a
 	post_id = params[:post_id]
 
-	#выбираем пост по id
+	# получаем список постов (у нас будет только один пост)
 	results = @db.execute 'SELECT * FROM Posts WHERE id = ?', [post_id]
+
+	# выбираем этот один пост в переменную @row
 	@row = results[0]
 
+	# возвращаем представление post.erb
 	erb :post 
 end
