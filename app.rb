@@ -29,7 +29,16 @@ configure do
 		"created_date" TEXT,
 		"content" TEXT
 	)'
-end
+
+	# создает таблицу если таблица не существует
+	@db.execute 'CREATE TABLE IF NOT EXISTS "Comments"
+	(
+		"id" INTEGER PRIMARY KEY AUTOINCREMENT,
+		"created_date" TEXT,
+		"content" TEXT,
+		"post_id" INTEGER
+	)'	
+end 
 
 get '/' do
 	# выбираем список постов из БД 
