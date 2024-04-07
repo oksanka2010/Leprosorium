@@ -101,9 +101,24 @@ post '/post/:post_id' do
 	post_id = params[:post_id]	
 
 	# получаем переменную из post-запроса
-	content = params[:content]	
+	content = params[:content]
 
-	# сохранение данных в БД
+	if content.length <= 0
+
+		# получаем список постов (у нас будет только один пост)
+		results = @db.execute 'SELECT * FROM Posts WHERE id = ?', [post_id]
+
+		# выбираем этот один пост в переменную @row
+		@row = results[0]
+
+		# выбираем комментарии для нашего поста
+		@comments = @db.execute 'SELECT * FROM Comments WHERE post_id = ? ORDER BY id', [post_id] 	
+
+		@error = 'Type comment text'
+		return erb :post
+	end
+
+    # сохранение данных в БД
 	@db.execute 'INSERT INTO Comments 
 		(
 			content, 
@@ -115,7 +130,7 @@ post '/post/:post_id' do
 			?, 
 			datetime(), 
 			?
-		)', [content, post_id]  
+		)', [content, post_id] 
 
 	# перенаправление на страницу поста
 	redirect to('/post/' + post_id)
